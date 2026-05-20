@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dumb Charades Room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell" id="page-shell">
+      <header class="hero">
+        <p class="eyebrow">3-4 player room</p>
+        <h1>Dumb Charades</h1>
+      </header>
+
+      <p class="connection-status hidden" id="connection-status" role="status" aria-live="polite"></p>
+
+      <main class="layout" id="layout">
+        <section class="panel join-panel" id="join-panel">
+          <div class="join-panel-top">
+            <div class="mode-switch" id="mode-switch">
+              <button id="create-room-mode" class="mode-button active" type="button">Create room</button>
+              <button id="join-game-mode" class="mode-button" type="button">Join game</button>
+            </div>
+            <button id="join-settings-button" class="icon-button" type="button" aria-label="Open create room settings">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10.5 2h3l.7 2.3a7.9 7.9 0 0 1 1.8.8l2.2-1.2 2.1 2.1-1.2 2.2c.3.6.6 1.2.8 1.8L22 10.5v3l-2.3.7a7.9 7.9 0 0 1-.8 1.8l1.2 2.2-2.1 2.1-2.2-1.2c-.6.3-1.2.6-1.8.8L13.5 22h-3l-.7-2.3a7.9 7.9 0 0 1-1.8-.8l-2.2 1.2-2.1-2.1 1.2-2.2a7.9 7.9 0 0 1-.8-1.8L2 13.5v-3l2.3-.7c.2-.6.5-1.2.8-1.8L3.9 5.8l2.1-2.1 2.2 1.2c.6-.3 1.2-.6 1.8-.8L10.5 2Zm1.5 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+
+          <h2 id="join-panel-title">Create a room</h2>
+          <label>
+            <span>Your name</span>
+            <input id="name-input" type="text" maxlength="20" placeholder="Aarav" />
+          </label>
+          <label>
+            <span>Room code</span>
+            <input id="room-input" type="text" maxlength="6" placeholder="FUN123" />
+          </label>
+          <div class="join-settings-preview" id="join-settings-preview">
+            <div>
+              <p class="meta-label">Prompt pack</p>
+              <strong id="join-current-category">Bollywood all eras</strong>
+            </div>
+            <div>
+              <p class="meta-label">Game rounds</p>
+              <strong id="join-current-game-rounds">1 round</strong>
+            </div>
+            <div>
+              <p class="meta-label">Round timer</p>
+              <strong id="join-current-round">60 seconds</strong>
+            </div>
+          </div>
+          <button id="join-button" class="primary-button">Create room</button>
+          <p id="join-error" class="message error"></p>
+        </section>
+
+        <section class="panel status-panel hidden" id="status-panel">
+          <div class="room-meta">
+            <div>
+              <p class="meta-label">Room</p>
+              <h2 id="room-code">------</h2>
+            </div>
+            <div class="room-meta-actions">
+              <div>
+                <p class="meta-label">Players</p>
+                <h2 id="player-count">0 / 4</h2>
+              </div>
+              <button id="room-settings-button" class="icon-button hidden" type="button" aria-label="Open room settings">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10.5 2h3l.7 2.3a7.9 7.9 0 0 1 1.8.8l2.2-1.2 2.1 2.1-1.2 2.2c.3.6.6 1.2.8 1.8L22 10.5v3l-2.3.7a7.9 7.9 0 0 1-.8 1.8l1.2 2.2-2.1 2.1-2.2-1.2c-.6.3-1.2.6-1.8.8L13.5 22h-3l-.7-2.3a7.9 7.9 0 0 1-1.8-.8l-2.2 1.2-2.1-2.1 1.2-2.2a7.9 7.9 0 0 1-.8-1.8L2 13.5v-3l2.3-.7c.2-.6.5-1.2.8-1.8L3.9 5.8l2.1-2.1 2.2 1.2c.6-.3 1.2-.6 1.8-.8L10.5 2Zm1.5 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="status-banner" id="status-banner">
+            <div class="status-item">
+              <p class="meta-label">Round</p>
+              <strong id="status-round-value">1 / 1</strong>
+            </div>
+            <div class="status-item">
+              <p class="meta-label">Current actor</p>
+              <strong id="status-actor-value">Waiting</strong>
+            </div>
+          </div>
+
+          <div class="settings-strip">
+            <div>
+              <p class="meta-label">Prompt pack</p>
+              <strong id="current-category">Bollywood</strong>
+            </div>
+            <div>
+              <p class="meta-label">Round timer</p>
+              <strong id="current-round">60 seconds</strong>
+            </div>
+            <div>
+              <p class="meta-label">Game rounds</p>
+              <strong id="current-game-rounds">1 round</strong>
+            </div>
+            <div>
+              <p class="meta-label">Time left</p>
+              <strong id="countdown">--</strong>
+            </div>
+          </div>
+
+          <div class="leaderboard-panel">
+            <p class="meta-label">Leaderboard</p>
+            <div class="leaderboard-list" id="leaderboard-list"></div>
+          </div>
+
+          <div class="podium hidden" id="podium"></div>
+        </section>
+
+        <section class="panel secret-panel hidden" id="secret-panel">
+          <p class="meta-label">Your view</p>
+          <div class="movie-card" id="movie-card">
+            <p class="movie-state" id="movie-state">Waiting for 3 players minimum</p>
+            <h2 id="movie-title">---</h2>
+            <p id="movie-copy" class="movie-copy"></p>
+          </div>
+
+          <button id="next-turn-button" class="primary-button hidden">End my turn</button>
+          <button id="start-game-button" class="primary-button hidden">Start game</button>
+          <button id="play-again-button" class="primary-button hidden">Play again</button>
+          <p id="turn-error" class="message error"></p>
+        </section>
+
+        <section class="panel guess-panel-shell hidden" id="guess-panel-shell">
+          <p class="meta-label">Guess box</p>
+          <div class="guess-feed" id="guess-feed"></div>
+          <form class="guess-form" id="guess-form">
+            <input
+              id="guess-input"
+              type="text"
+              maxlength="120"
+              placeholder="Type your guess"
+              autocomplete="off"
+            />
+            <button id="guess-button" type="submit" class="secondary-button">Guess</button>
+          </form>
+          <p id="guess-error" class="message error"></p>
+        </section>
+      </main>
+
+      <div class="overlay hidden" id="settings-overlay">
+        <div class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+          <div class="modal-header">
+            <div>
+              <p class="meta-label">Room setup</p>
+              <h2 id="settings-modal-title">Create room settings</h2>
+            </div>
+            <button id="settings-close-button" class="icon-button" type="button" aria-label="Close settings">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6 18 18M18 6 6 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
+              </svg>
+            </button>
+          </div>
+          <p class="modal-copy" id="settings-modal-copy">Choose the prompt pack, number of rounds, and round timer.</p>
+          <div class="settings-grid" id="create-settings">
+            <label>
+              <span>Prompt pack</span>
+              <select id="category-select">
+                <option value="bollywood">Bollywood all eras</option>
+                <option value="bollywoodOld">Bollywood old classics</option>
+                <option value="bollywoodNew">Bollywood new releases</option>
+                <option value="hollywood">Hollywood all eras</option>
+                <option value="hollywoodOld">Hollywood old classics</option>
+                <option value="hollywoodNew">Hollywood new releases</option>
+                <option value="scenarios">Everyday scenarios</option>
+                <option value="office">Office drama</option>
+                <option value="adult">After hours 18+</option>
+              </select>
+            </label>
+            <label>
+              <span>Game rounds</span>
+              <select id="game-rounds-select">
+                <option value="1" selected>1 round</option>
+                <option value="2">2 rounds</option>
+                <option value="3">3 rounds</option>
+              </select>
+            </label>
+            <label>
+              <span>Round timer</span>
+              <select id="timer-select">
+                <option value="30">30 seconds</option>
+                <option value="45">45 seconds</option>
+                <option value="60" selected>60 seconds</option>
+                <option value="90">90 seconds</option>
+              </select>
+            </label>
+          </div>
+          <div class="room-settings-editor hidden" id="settings-editor">
+            <div class="settings-grid compact">
+              <label>
+                <span>Prompt pack</span>
+                <select id="room-category-select"></select>
+              </label>
+              <label>
+                <span>Game rounds</span>
+                <select id="room-game-rounds-select"></select>
+              </label>
+              <label>
+                <span>Round timer</span>
+                <select id="room-timer-select"></select>
+              </label>
+            </div>
+            <button id="save-settings-button" class="secondary-button">Save room settings</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay summary-overlay hidden" id="round-summary-overlay">
+        <div class="round-summary-popup" id="round-summary-popup">
+          <p class="meta-label">Round summary</p>
+          <h2 id="round-summary-answer">---</h2>
+          <div class="round-summary-points" id="round-summary-points"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
