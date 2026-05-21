@@ -38,6 +38,12 @@ function emitAppError(socket, message = "Something went wrong. Please refresh an
   socket.emit("app-error", message);
 }
 
+function emitRoomAppError(room, message = "The room hit an unexpected error. Please start a new round or refresh.") {
+  room.players.forEach((player) => {
+    io.to(player.id).emit("app-error", message);
+  });
+}
+
 let isShuttingDownForFatalError = false;
 
 function shutdownOnFatalError(source, error) {
@@ -68,6 +74,20 @@ function withSocketGuard(socket, eventName, handler) {
     } catch (error) {
       logServerError(`socket:${eventName}`, error);
       emitAppError(socket);
+    }
+  };
+}
+
+function withRoomGuard(room, taskName, handler) {
+  return () => {
+    try {
+      handler();
+    } catch (error) {
+      logServerError(`room:${taskName}`, error);
+      clearRoomTimer(room);
+      clearRevealTimer(room);
+      emitRoomAppError(room);
+      broadcastRoom(room);
     }
   };
 }
@@ -206,14 +226,18 @@ function resetTurnState(room) {
 }
 
 function resetGameState(room, options = {}) {
-  const { preserveStartedPlayerCount = false } = options;
+  const { preserveStartedPlayerCount = false, resetPromptCycle = false } = options;
 
   clearRoomTimer(room);
   clearRevealTimer(room);
   room.turnIndex = 0;
   room.currentMovie = null;
-  room.lastPrompt = null;
-  room.promptQueue = [];
+
+  if (resetPromptCycle) {
+    room.lastPrompt = null;
+    room.promptQueue = [];
+  }
+
   room.completedTurns = 0;
   room.isGameOver = false;
   room.startedPlayerCount = preserveStartedPlayerCount ? room.startedPlayerCount : null;
@@ -301,10 +325,10 @@ function scheduleRoundTimer(room) {
   }
 
   room.turnEndsAt = Date.now() + room.settings.roundSeconds * 1000;
-  room.timerHandle = setTimeout(() => {
+  room.timerHandle = setTimeout(withRoomGuard(room, "round-timer", () => {
     room.timerHandle = null;
     finishRound(room);
-  }, room.settings.roundSeconds * 1000);
+  }), room.settings.roundSeconds * 1000);
 }
 
 function startRound(room) {
@@ -321,8 +345,6 @@ function startGame(room) {
   room.startedPlayerCount = room.players.length;
   room.turnIndex = 0;
   room.currentMovie = null;
-  room.lastPrompt = null;
-  room.promptQueue = [];
   room.completedTurns = 0;
   room.isGameOver = false;
   resetTurnState(room);
@@ -377,7 +399,7 @@ function finishRound(room) {
 
   broadcastRoom(room);
 
-  room.revealHandle = setTimeout(() => {
+  room.revealHandle = setTimeout(withRoomGuard(room, "round-reveal", () => {
     room.revealHandle = null;
     room.revealEndsAt = null;
     room.roundSummary = null;
@@ -396,7 +418,7 @@ function finishRound(room) {
     room.turnIndex = (room.turnIndex + 1) % room.players.length;
     startRound(room);
     broadcastRoom(room);
-  }, TURN_REVEAL_MS);
+  }), TURN_REVEAL_MS);
 }
 
 function ensurePlayableTurn(room) {
@@ -624,10 +646,13 @@ io.on("connection", (socket) => {
       return;
     }
 
-    room.settings.category = normalizeCategory(category);
+    const nextCategory = normalizeCategory(category);
+    const shouldResetPromptCycle = nextCategory !== room.settings.category;
+
+    room.settings.category = nextCategory;
     room.settings.roundSeconds = normalizeRoundSeconds(roundSeconds);
     room.settings.gameRounds = normalizeGameRounds(gameRounds);
-    resetGameState(room);
+    resetGameState(room, { resetPromptCycle: shouldResetPromptCycle });
     broadcastRoom(room);
   }));
 
