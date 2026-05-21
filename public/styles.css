@@ -567,7 +567,7 @@ select:focus {
   }
 }
 
-@media (max-width: 920px) {
+@media (max-width: 1220px) {
   .page-shell {
     width: min(100%, calc(100vw - 20px));
     padding: 18px 10px 28px;
@@ -709,6 +709,27 @@ select:focus {
   }
 }
 
+@media (max-width: 860px) {
+  .layout.room-active {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "secret"
+      "guess"
+      "status";
+    gap: 8px;
+  }
+
+  .guess-panel-shell,
+  .status-panel,
+  .secret-panel {
+    min-width: 0;
+  }
+
+  .room-meta-actions {
+    gap: 8px;
+  }
+}
+
 @media (max-width: 520px) {
   .page-shell {
     width: min(100%, calc(100vw - 12px));
@@ -716,8 +737,7 @@ select:focus {
   }
 
   .layout.room-active {
-    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
-    gap: 8px;
+    grid-template-columns: 1fr;
   }
 
   .eyebrow,
