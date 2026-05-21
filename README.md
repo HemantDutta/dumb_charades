@@ -1,4 +1,4 @@
-# Dumb Charades
+# Dumb Charades 🎭
 
 `Dumb Charades` is a free, self-hosted party game you can deploy for yourself and your friends.
 
@@ -6,7 +6,11 @@ The idea is simple: open the app in a browser, join the same room, and use it as
 
 This project is built to be lightweight and easy to run. It does not need accounts, chat moderation systems, video streaming, or a large backend. You host it, share the room code, and play.
 
-## What the project is for
+<p align="center">
+	<img src="static/join.png" alt="Create room screen" width="780" />
+</p>
+
+## What the project is for 🎉
 
 This repo exists for people who want:
 
@@ -22,7 +26,7 @@ Typical use:
 3. Share the game link with your friends.
 4. Create a room, join it, and let the app run the game flow while the acting happens over the call.
 
-## What the game does
+## What the game does 🕹️
 
 The current version includes:
 
@@ -35,7 +39,17 @@ The current version includes:
 - Mobile-friendly browser UI.
 - Basic connection-loss and reconnect handling.
 
-## How it works
+<p align="center">
+	<img src="static/ready.png" alt="Ready to start room state" width="780" />
+</p>
+
+Once the room is full enough to play, the app handles the boring parts for you: turn order, timers, reveal flow, and scoring.
+
+<p align="center">
+	<img src="static/guess.png" alt="Guessing screen during a round" width="780" />
+</p>
+
+## How it works 🧠
 
 The app uses a single Node.js server.
 
@@ -46,7 +60,13 @@ The app uses a single Node.js server.
 
 That tradeoff is intentional: it keeps the project cheap and easy to deploy for casual games with friends.
 
-## Local setup
+<p align="center">
+	<img src="static/hint.png" alt="Masked hint view for guessers" width="780" />
+</p>
+
+That hidden-prompt split is the core trick: the actor sees the real answer, everybody else sees the masked clue. 🤫
+
+## Local setup ⚡
 
 Requirements:
 
@@ -64,7 +84,7 @@ By default, the server runs on port `3000`.
 
 If your hosting environment provides a `PORT` variable, the app uses that automatically.
 
-## Project structure
+## Project structure 📦
 
 - `server.js`: Express server, Socket.IO events, room lifecycle, timers, and scoring.
 - `movie-datasets.js`: prompt pack definitions.
@@ -72,7 +92,7 @@ If your hosting environment provides a `PORT` variable, the app uses that automa
 - `public/app.js`: client state rendering and socket interaction.
 - `public/styles.css`: desktop and mobile styling.
 
-## Notes and limitations
+## Notes and limitations 👀
 
 - This is a friends-only, lightweight app, not a large multiplayer platform.
 - Rooms are in memory, so restarts reset active sessions.
@@ -81,9 +101,15 @@ If your hosting environment provides a `PORT` variable, the app uses that automa
 
 For most casual groups, that is a feature, not a bug: fewer moving parts, less cost, less maintenance.
 
-## Forking and extending it
+## Forking and extending it 🛠️
 
 If you want to fork this and turn it into your own version, this repo is already set up in a way that is easy to modify.
+
+<p align="center">
+	<img src="static/settings.png" alt="Room settings modal" width="620" />
+</p>
+
+If you want to add your own flavor, this is the fun part. New packs, different scoring, custom room rules, more chaos, less chaos, whatever fits your group. 😄
 
 ### Where to start
 
@@ -122,7 +148,7 @@ If you are extending gameplay, start here:
 
 If you keep the current architecture in mind, the project is straightforward to evolve.
 
-## General deployment guide
+## General deployment guide 🚀
 
 This section is intentionally platform-agnostic.
 
@@ -162,7 +188,7 @@ This section is intentionally platform-agnostic.
 
 If you want stronger durability, the next step is adding persistent room storage and a more deliberate reconnect/session model.
 
-## Running games with friends
+## Running games with friends 📞
 
 The simplest real-world setup is:
 
